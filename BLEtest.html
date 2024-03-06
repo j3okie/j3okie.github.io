@@ -126,7 +126,7 @@
             document.getElementById("consoleArea").innerHTML += "Read value: " + value + '\n';
             const decodedValue = new TextDecoder().decode(value);
             document.getElementById("consoleArea").innerHTML += "Decoded value: " + decodedValue + '\n';
-            document.getElementById("consoleArea").innerHTML = decodedValue;
+            document.getElementById("fltNum").innerHTML = decodedValue;
             retrievedValue.innerHTML = decodedValue;
         })
         .catch(error => {
