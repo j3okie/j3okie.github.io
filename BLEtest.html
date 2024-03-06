@@ -27,6 +27,7 @@
   <p>Last value sent: <span id="valueSent"></span></p>
   <p><a href="https://randomnerdtutorials.com/">Created by RandomNerdTutorials.com</a></p>
   <p><a href="https://RandomNerdTutorials.com/esp32-web-bluetooth/">Read the full project here.</a></p>
+  <p id="consoleArea"></p>
 </body>
 <script>
     // DOM Elements
@@ -77,30 +78,30 @@
 
     // Connect to BLE Device and Enable Notifications
     function connectToDevice(){
-        console.log('Initializing Bluetooth...');
+        document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
         navigator.bluetooth.requestDevice({
             filters: [{name: deviceName}],
             optionalServices: [bleService]
         })
         .then(device => {
-            console.log('Device Selected:', device.name);
-            bleStateContainer.innerHTML = 'Connected to device ' + device.name;
+            document.getElementById("consoleArea").innerHTML += 'Device Selected:'+  device.name + '\n';
+            bleStateContainer.innerHTML = 'Connected to ' + device.name;
             bleStateContainer.style.color = "#24af37";
             device.addEventListener('gattservicedisconnected', onDisconnected);
             return device.gatt.connect();
         })
         .then(gattServer =>{
             bleServer = gattServer;
-            console.log("Connected to GATT Server");
+            document.getElementById("consoleArea").innerHTML += "Connected to GATT Server\n";
             return bleServer.getPrimaryService(bleService);
         })
         .then(service => {
             bleServiceFound = service;
-            console.log("Service discovered:", service.uuid);
-            return service.getCharacteristic(sensorCharacteristic);
+            document.getElementById("consoleArea").innerHTML += "Service discovered:" + service.uuid + '\n';
+            return service.getCharacteristic(0001);
         })
         .then(characteristic => {
-            console.log("Characteristic discovered:", characteristic.uuid);
+            document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
             sensorCharacteristicFound = characteristic;
             characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
             characteristic.startNotifications();
@@ -108,13 +109,13 @@
             return characteristic.readValue();
         })
         .then(value => {
-            console.log("Read value: ", value);
+            document.getElementById("consoleArea").innerHTML += "Read value: " + value + '\n';
             const decodedValue = new TextDecoder().decode(value);
-            console.log("Decoded value: ", decodedValue);
+            document.getElementById("consoleArea").innerHTML += "Decoded value: " + decodedValue + '\n';
             retrievedValue.innerHTML = decodedValue;
         })
         .catch(error => {
-            console.log('Error: ', error);
+            document.getElementById("consoleArea").innerHTML += 'Error: ' + error + '\n';
         })
     }
 
