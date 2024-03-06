@@ -14,11 +14,19 @@
     <link rel="icon" type="image/png" href="">
 </head>
 <body>
-  <h1>ESP32 Web BLE Application</h1>
-  <button id="connectBleButton">Connect to BLE Device</button>
-  <button id="disconnectBleButton">Disconnect BLE Device</button>
+  <h1>FliteNote by OakNotes</h1>
+  <button id="connectBleButton">Connect to BLE FliteNote</button>
+  <button id="disconnectBleButton">Disconnect FliteNote</button>
   <p>BLE state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
   <h2>Fetched Value</h2>
+  <table>
+    <thead>
+        <tr>
+            <td id="deptICAO">DEPT</td><td id="fltNum">FLTNUM</td><td id="destICAO">DEST</td>
+        </tr>
+    </thead>
+    <tr><td>DepTime</td><td></td><td>ArrTime</td></tr>
+  </table>
   <p><span id="valueContainer">NaN</span></p>
   <p>Last reading: <span id="timestamp"></span></p>
   <h2>Control GPIO 2</h2>
@@ -43,9 +51,15 @@
     //Define BLE Device Specs
     var deviceName ='FliteNote';
     var bleService = 'C7C1CE91-C934-44A6-BE35-F5180C897001';
-    var ledCharacteristic = '19b10002-e8f2-537e-4f6c-d104768a1214';
-    var sensorCharacteristic= '19b10001-e8f2-537e-4f6c-d104768a1214';
-
+    var fnFlightNum = '0001';
+    var fnDeptICAO = '0002';
+    var fnDestICAO = '0003';
+    var fnETE = '0004';
+    var fnDeptTime = '0005';
+    var fnArrTime = '0006';
+    var fnBlockFuel = '0007';
+    var fnToFuel = '0008';
+    var fnArrFuel = '0009';
     //Global Variables to Handle Bluetooth
     var bleServer;
     var bleServiceFound;
@@ -98,7 +112,7 @@
         .then(service => {
             bleServiceFound = service;
             document.getElementById("consoleArea").innerHTML += "Service discovered:" + service.uuid + '\n';
-            return service.getCharacteristic(0001);
+            return service.getCharacteristic(fnFlightNum);
         })
         .then(characteristic => {
             document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
@@ -112,6 +126,7 @@
             document.getElementById("consoleArea").innerHTML += "Read value: " + value + '\n';
             const decodedValue = new TextDecoder().decode(value);
             document.getElementById("consoleArea").innerHTML += "Decoded value: " + decodedValue + '\n';
+            document.getElementById("consoleArea").innerHTML = decodedValue;
             retrievedValue.innerHTML = decodedValue;
         })
         .catch(error => {
@@ -134,20 +149,20 @@
         timestampContainer.innerHTML = getDateTime();
     }
 
-    function writeOnCharacteristic(value){
+    function writeOnCharacteristic(char, value){
         if (bleServer && bleServer.connected) {
-            bleServiceFound.getCharacteristic(ledCharacteristic)
+            bleServiceFound.getCharacteristic(char)
             .then(characteristic => {
-                console.log("Found the LED characteristic: ", characteristic.uuid);
+                console.log("Found the  characteristic: ", characteristic.uuid);
                 const data = new Uint8Array([value]);
                 return characteristic.writeValue(data);
             })
             .then(() => {
                 latestValueSent.innerHTML = value;
-                console.log("Value written to LEDcharacteristic:", value);
+                console.log("Value written to uuid " + char + ": ", value);
             })
             .catch(error => {
-                console.error("Error writing to the LED characteristic: ", error);
+                console.error("Error writing to the characteristic: ", error);
             });
         } else {
             console.error ("Bluetooth is not connected. Cannot write to characteristic.")
