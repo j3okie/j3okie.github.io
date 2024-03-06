@@ -12,6 +12,14 @@
     <title>ESP32 Web BLE App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="">
+    <style type="text/css">
+        .tg  {border-collapse:collapse;border-spacing:0;}
+        .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+          overflow:hidden;padding:10px 5px;word-break:normal;}
+        .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+          font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+        .tg .tg-0lax{text-align:left;vertical-align:top}
+        </style>
 </head>
 <body>
   <h1>FliteNote by OakNotes</h1>
@@ -19,12 +27,13 @@
   <button id="disconnectBleButton">Disconnect FliteNote</button>
   <p>BLE state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
   <h2>Fetched Value</h2>
-  <table>
+  <table class="tg">
     <thead>
         <tr>
-            <td id="deptICAO">DEPT</td><td id="fltNum">FLTNUM</td><td id="destICAO">DEST</td>
+            <td id="deptICAO" class="tg-0lax">DEPT</td><td id="fltNum" class="tg-0lax" style="color:white; background-color: black;font-weight: bold;">FLTNUM</td><td id="destICAO"class="tg-0lax">DEST</td>
         </tr>
     </thead>
+    <tr><td></td><td>wdr/notoc</td><td></td></tr>
     <tr><td>DepTime</td><td></td><td>ArrTime</td></tr>
   </table>
   <p><span id="valueContainer">NaN</span></p>
