@@ -167,12 +167,12 @@
     async function connectToDevice() {
         document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
             const device = await navigator.bluetooth.requestDevice({
-                filters: [{ name: [deviceName] }]
+                filters: [{ name: deviceName }]
             });
             log('Connecting to GATT Server...');
-
-            const server = await device.gatt.connect();
             document.getElementById("consoleArea").innerHTML += 'Device Selected:' + device.name + '\n';
+            
+            const server = await device.gatt.connect();
             bleStateContainer.innerHTML = 'Connected to ' + device.name;
             bleStateContainer.style.color = "#24af37";
             device.addEventListener('gattservicedisconnected', onDisconnected);
