@@ -182,6 +182,8 @@
 
             const FltNumCharacteristic = await service.getCharacteristic('0001');
             FltNumCharacteristic.readValue();
+            document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + FltNumCharacteristic.uuid + '\n';
+
             const characteristics = await service.getCharacteristics();
 
             for (let c = 0; c < characteristics.length; c++) {
@@ -193,9 +195,10 @@
             for (let c = 0; c < characteristics.length; c++) {
                 document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
                 //let temp;
-                //if (characteristics[c].properties.read){
-                //characteristics[c].readValue();
-                //}
+                if (characteristics[c].properties.read){
+                    document.getElementById("consoleArea").innerHTML += "Readable:\n"
+                characteristics[c].readValue();
+                }
                 document.getElementById("consoleArea").innerHTML += "Read command completed for UUID:" + characteristics[c].uuid + '\n';
                 let decodedValue;
                 decodedValue = new TextDecoder().decode(characteristics[c].value);
@@ -216,7 +219,7 @@
             //characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
             //characteristic.startNotifications();
             //console.log("Notifications Started.");
-            //return characteristic[0].readValue();
+            //return characteristics[0].readValue();
     }
 
     function onDisconnected(event) {
