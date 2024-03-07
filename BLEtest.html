@@ -165,10 +165,11 @@
 
     // Connect to BLE Device and Enable Notifications
     async function connectToDevice() {
+        try{
         document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
             const device = await navigator.bluetooth.requestDevice({
                 filters: [{ name: deviceName }]
-            }).catch(err => { document.getElementById("consoleArea").innerHTML += "Error" + err });
+            });
             log('Connecting to GATT Server...');
             document.getElementById("consoleArea").innerHTML += 'Device Selected:' + device.name + '\n';
             
@@ -192,6 +193,9 @@
                     document.getElementById("destICAO").innerHTML = decodedValue;
                 }
             }
+        } catch(error){
+            document.getElementById("consoleArea").innerHTML += "Error: " + error;
+        }
             //document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
             //sensorCharacteristicFound = characteristic;
             //characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
