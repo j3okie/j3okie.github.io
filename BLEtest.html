@@ -166,7 +166,6 @@
     // Connect to BLE Device and Enable Notifications
     async function connectToDevice() {
         document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
-        try {
             const device = await navigator.bluetooth.requestDevice({
                 filters: [{ name: deviceName }],
                 optionalServices: [bleService]
@@ -200,10 +199,6 @@
             //characteristic.startNotifications();
             //console.log("Notifications Started.");
             //return characteristic[0].readValue();
-        }
-        catch (error) {
-            log('Argh! ' + error);
-        }
     }
 
     function onDisconnected(event) {
