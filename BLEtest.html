@@ -170,7 +170,6 @@
             const device = await navigator.bluetooth.requestDevice({
                 filters: [{ name: deviceName }]
             });
-            log('Connecting to GATT Server...');
             document.getElementById("consoleArea").innerHTML += 'Device Selected:' + device.name + '\n';
             
             const server = await device.gatt.connect();
@@ -178,7 +177,6 @@
             bleStateContainer.style.color = "#24af37";
             device.addEventListener('gattservicedisconnected', onDisconnected);
 
-            log('Getting Service...');
             const service = await server.getPrimaryService(bleService);
 
             let characteristics = await service.getCharacteristics();
