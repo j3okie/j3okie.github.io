@@ -188,13 +188,13 @@
 
             for (let c = 0; c < characteristics.length; c++) {
                 document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
-                let temp;
+                //let temp;
                 //if (characteristics[c].properties.read){
                 //characteristics[c].readValue();
                 //}
                 document.getElementById("consoleArea").innerHTML += "Read command completed for UUID:" + characteristics[c].uuid + '\n';
                 let decodedValue;
-                decodedValue = new TextDecoder().decode(temp);
+                decodedValue = new TextDecoder().decode(characteristics[c].value);
                 document.getElementById("consoleArea").innerHTML += " value:" + decodedValue + '\n';
                 if (characteristics[c].uuid === fnFlightNum) {
                     document.getElementById("fltNum").innerHTML = decodedValue;
