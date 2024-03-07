@@ -8,43 +8,107 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>ESP32 Web BLE App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="">
     <style type="text/css">
-        .tg  {border-collapse:collapse;border-spacing:0;}
-        .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-          overflow:hidden;padding:10px 5px;word-break:normal;}
-        .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-          font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-        .tg .tg-0lax{text-align:left;vertical-align:top}
-        </style>
+        .tg {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .tg td {
+            border-color: black;
+            border-style: solid;
+            border-width: 1px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            overflow: hidden;
+            padding: 0px 5px;
+            word-break: normal;
+        }
+
+        .tg th {
+            border-color: black;
+            border-style: solid;
+            border-width: 1px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+            overflow: hidden;
+            padding: 10px 5px;
+            word-break: normal;
+        }
+
+        .tg .tg-0lax {
+            text-align: center;
+            vertical-align: top
+        }
+
+        .tg .tg-1lax {
+            text-align: center;
+            vertical-align: top;
+            background-color: red;
+            color: white;
+            border-style: solid;
+            border-width: 0px;
+            font-family: Arial, sans-serif;
+            font-size: 8px;
+        }
+    </style>
 </head>
+
 <body>
-  <h1>FliteNote by OakNotes</h1>
-  <button id="connectBleButton">Connect to BLE FliteNote</button>
-  <button id="disconnectBleButton">Disconnect FliteNote</button>
-  <p>BLE state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
-  <h2>Fetched Value</h2>
-  <table class="tg">
-    <thead>
+    <h1>FliteNote by OakNotes</h1>
+    <button id="connectBleButton">Connect to BLE FliteNote</button>
+    <button id="disconnectBleButton">Disconnect FliteNote</button>
+    <p>BLE state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
+    <h2>Fetched Value</h2>
+    <table class="tg">
+        <thead>
+            <tr>
+                <th id="deptICAO" class="tg-0lax">DEPT</th>
+                <th id="fltNum" class="tg-0lax" style="color:white; background-color: black;font-weight: bold;"
+                    colspan="2">FLTNUM</th>
+                <th id="destICAO" class="tg-0lax">DEST</th>
+            </tr>
+        </thead>
         <tr>
-            <td id="deptICAO" class="tg-0lax">DEPT</td><td id="fltNum" class="tg-0lax" style="color:white; background-color: black;font-weight: bold;">FLTNUM</td><td id="destICAO"class="tg-0lax">DEST</td>
+            <td height="10px"></td>
+            <td class="tg-1lax">notoc</td>
+            <td class="tg-1lax">WDR</td>
+            <td></td>
         </tr>
-    </thead>
-    <tr><td></td><td>wdr/notoc</td><td></td></tr>
-    <tr><td>DepTime</td><td></td><td>ArrTime</td></tr>
-  </table>
-  <p><span id="valueContainer">NaN</span></p>
-  <p>Last reading: <span id="timestamp"></span></p>
-  <h2>Control GPIO 2</h2>
-  <button id="onButton">ON</button>
-  <button id="offButton">OFF</button>
-  <p>Last value sent: <span id="valueSent"></span></p>
-  <p><a href="https://randomnerdtutorials.com/">Created by RandomNerdTutorials.com</a></p>
-  <p><a href="https://RandomNerdTutorials.com/esp32-web-bluetooth/">Read the full project here.</a></p>
-  <p id="consoleArea"></p>
+        <tr>
+            <td>DepTime</td>
+            <td></td>
+            <td></td>
+            <td>ArrTime</td>
+        </tr>
+        <tr>
+            <td>ETE</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Fuel</td>
+            <td>Block</td>
+            <td>MinT/O</td>
+            <td>Land</td>
+        </tr>
+    </table>
+    <p><span id="valueContainer">NaN</span></p>
+    <p>Last reading: <span id="timestamp"></span></p>
+    <h2>Control GPIO 2</h2>
+    <button id="onButton">ON</button>
+    <button id="offButton">OFF</button>
+    <p>Last value sent: <span id="valueSent"></span></p>
+    <p><a href="https://randomnerdtutorials.com/">Created by RandomNerdTutorials.com</a></p>
+    <p><a href="https://RandomNerdTutorials.com/esp32-web-bluetooth/">Read the full project here.</a></p>
+    <p id="consoleArea"></p>
 </body>
 <script>
     // DOM Elements
@@ -58,7 +122,7 @@
     const timestampContainer = document.getElementById('timestamp');
 
     //Define BLE Device Specs
-    var deviceName ='FliteNote';
+    var deviceName = 'FliteNote';
     var bleService = 'C7C1CE91-C934-44A6-BE35-F5180C897001';
     var fnFlightNum = '0001';
     var fnDeptICAO = '0002';
@@ -76,7 +140,7 @@
 
     // Connect Button (search for BLE Devices only if BLE is available)
     connectButton.addEventListener('click', (event) => {
-        if (isWebBluetoothEnabled()){
+        if (isWebBluetoothEnabled()) {
             connectToDevice();
         }
     });
@@ -100,50 +164,54 @@
     }
 
     // Connect to BLE Device and Enable Notifications
-    function connectToDevice(){
+    function connectToDevice() {
         document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
         navigator.bluetooth.requestDevice({
-            filters: [{name: deviceName}],
+            filters: [{ name: deviceName }],
             optionalServices: [bleService]
         })
-        .then(device => {
-            document.getElementById("consoleArea").innerHTML += 'Device Selected:'+  device.name + '\n';
-            bleStateContainer.innerHTML = 'Connected to ' + device.name;
-            bleStateContainer.style.color = "#24af37";
-            device.addEventListener('gattservicedisconnected', onDisconnected);
-            return device.gatt.connect();
-        })
-        .then(gattServer =>{
-            bleServer = gattServer;
-            document.getElementById("consoleArea").innerHTML += "Connected to GATT Server\n";
-            return bleServer.getPrimaryService(bleService);
-        })
-        .then(service => {
-            bleServiceFound = service;
-            document.getElementById("consoleArea").innerHTML += "Service discovered:" + service.uuid + '\n';
-            return service.getCharacteristic(fnFlightNum);
-        })
-        .then(characteristic => {
-            document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
-            sensorCharacteristicFound = characteristic;
-            characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
-            characteristic.startNotifications();
-            console.log("Notifications Started.");
-            return characteristic.readValue();
-        })
-        .then(value => {
-            document.getElementById("consoleArea").innerHTML += "Read value: " + value + '\n';
-            const decodedValue = new TextDecoder().decode(value);
-            document.getElementById("consoleArea").innerHTML += "Decoded value: " + decodedValue + '\n';
-            document.getElementById("fltNum").innerHTML = decodedValue;
-            retrievedValue.innerHTML = decodedValue;
-        })
-        .catch(error => {
-            document.getElementById("consoleArea").innerHTML += 'Error: ' + error + '\n';
-        })
+            .then(device => {
+                document.getElementById("consoleArea").innerHTML += 'Device Selected:' + device.name + '\n';
+                bleStateContainer.innerHTML = 'Connected to ' + device.name;
+                bleStateContainer.style.color = "#24af37";
+                device.addEventListener('gattservicedisconnected', onDisconnected);
+                return device.gatt.connect();
+            })
+            .then(gattServer => {
+                bleServer = gattServer;
+                document.getElementById("consoleArea").innerHTML += "Connected to GATT Server\n";
+                return bleServer.getPrimaryService(bleService);
+            })
+            .then(service => {
+                bleServiceFound = service;
+                document.getElementById("consoleArea").innerHTML += "Service discovered:" + service.uuid + '\n';
+                return service.getCharacteristics();
+            })
+            .then(characteristics => {
+                for (c in characteristics){
+                    document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + c.uuid + '\n';
+                    const decodedValue = new TextDecoder().decode(c.readValue());
+                if (c.uuid == fnFlightNum){
+                    document.getElementById("fltNum").innerHTML = decodedValue;
+                } else if(c.uuid == fnDeptICAO){
+                    document.getElementById("deptICAO").innerHTML = decodedValue;
+                } else if(c.uuid == fnDestICAO){
+                    document.getElementById("destICAO").innerHTML = decodedValue;
+                }
+                }
+                document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
+                sensorCharacteristicFound = characteristic;
+                characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
+                characteristic.startNotifications();
+                console.log("Notifications Started.");
+                return characteristic.readValue();
+            })
+            .catch(error => {
+                document.getElementById("consoleArea").innerHTML += 'Error: ' + error + '\n';
+            })
     }
 
-    function onDisconnected(event){
+    function onDisconnected(event) {
         console.log('Device Disconnected:', event.target.device.name);
         bleStateContainer.innerHTML = "Device disconnected";
         bleStateContainer.style.color = "#d13a30";
@@ -151,30 +219,30 @@
         connectToDevice();
     }
 
-    function handleCharacteristicChange(event){
+    function handleCharacteristicChange(event) {
         const newValueReceived = new TextDecoder().decode(event.target.value);
         console.log("Characteristic value changed: ", newValueReceived);
         retrievedValue.innerHTML = newValueReceived;
         timestampContainer.innerHTML = getDateTime();
     }
 
-    function writeOnCharacteristic(char, value){
+    function writeOnCharacteristic(char, value) {
         if (bleServer && bleServer.connected) {
             bleServiceFound.getCharacteristic(char)
-            .then(characteristic => {
-                console.log("Found the  characteristic: ", characteristic.uuid);
-                const data = new Uint8Array([value]);
-                return characteristic.writeValue(data);
-            })
-            .then(() => {
-                latestValueSent.innerHTML = value;
-                console.log("Value written to uuid " + char + ": ", value);
-            })
-            .catch(error => {
-                console.error("Error writing to the characteristic: ", error);
-            });
+                .then(characteristic => {
+                    console.log("Found the  characteristic: ", characteristic.uuid);
+                    const data = new Uint8Array([value]);
+                    return characteristic.writeValue(data);
+                })
+                .then(() => {
+                    latestValueSent.innerHTML = value;
+                    console.log("Value written to uuid " + char + ": ", value);
+                })
+                .catch(error => {
+                    console.error("Error writing to the characteristic: ", error);
+                });
         } else {
-            console.error ("Bluetooth is not connected. Cannot write to characteristic.")
+            console.error("Bluetooth is not connected. Cannot write to characteristic.")
             window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
         }
     }
