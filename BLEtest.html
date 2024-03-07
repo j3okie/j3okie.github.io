@@ -201,7 +201,9 @@
             //console.log("Notifications Started.");
             //return characteristic[0].readValue();
         }
-        
+        catch (error) {
+            log('Argh! ' + error);
+        }
     }
 
     function onDisconnected(event) {
