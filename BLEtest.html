@@ -182,6 +182,7 @@
             let characteristics = await service.getCharacteristics();
             for (let c = 0; c < characteristics.length; c++) {
                 document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
+                characteristics[c].readValue();
                 let decodedValue;
                 decodedValue = new TextDecoder().decode(characteristics[c].value);
                 if (characteristics[c].uuid === fnFlightNum) {
