@@ -188,7 +188,7 @@
 
             for (let c = 0; c < characteristics.length; c++) {
                 document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
-                let temp = await characteristics[c].readValue();
+                //let temp = await characteristics[c].readValue();
                 let decodedValue;
                 decodedValue = new TextDecoder().decode(characteristics[c].value);
                 document.getElementById("consoleArea").innerHTML += " value:" + decodedValue + '\n';
