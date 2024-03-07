@@ -181,16 +181,16 @@
 
             let characteristics = await service.getCharacteristics();
 
-            //for (let c = 0; c < characteristics.length; c++) {
-            //    document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
-            //    let temp = await characteristics[c].readValue();
-            //}
+            for (let c = 0; c < characteristics.length; c++) {
+                document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
+                characteristics[c].readValue();
+            }
 
             for (let c = 0; c < characteristics.length; c++) {
                 document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
                 let temp;
                 //if (characteristics[c].properties.read){
-                characteristics[c].readValue();
+                //characteristics[c].readValue();
                 //}
                 document.getElementById("consoleArea").innerHTML += "Read command completed for UUID:" + characteristics[c].uuid + '\n';
                 let decodedValue;
