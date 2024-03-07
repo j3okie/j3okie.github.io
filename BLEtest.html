@@ -163,7 +163,7 @@
         return true
     }
 
-    // Connect to BLE Device and Enable Notifications
+    // Connect to BLE Device
     async function connectToDevice() {
         try{
         document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
@@ -190,6 +190,7 @@
                 document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
                 let temp;
                 temp = await characteristics[c].readValue();
+                document.getElementById("consoleArea").innerHTML += "Read command completed for UUID:" + characteristics[c].uuid + '\n';
                 let decodedValue;
                 decodedValue = new TextDecoder().decode(temp);
                 document.getElementById("consoleArea").innerHTML += " value:" + decodedValue + '\n';
