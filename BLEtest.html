@@ -188,23 +188,23 @@
                 return service.getCharacteristics();
             })
             .then(characteristics => {
-                for (c in characteristics){
-                    document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + c.uuid + '\n';
-                    const decodedValue = new TextDecoder().decode(c.readValue());
-                if (c.uuid == fnFlightNum){
+                for (let c = 0; c < characteristics.length; c++){
+                    document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
+                    const decodedValue = new TextDecoder().decode(characteristics[c].readValue());
+                if (characteristics[c].uuid == fnFlightNum){
                     document.getElementById("fltNum").innerHTML = decodedValue;
-                } else if(c.uuid == fnDeptICAO){
+                } else if(characteristics[c].uuid == fnDeptICAO){
                     document.getElementById("deptICAO").innerHTML = decodedValue;
-                } else if(c.uuid == fnDestICAO){
+                } else if(characteristics[c].uuid == fnDestICAO){
                     document.getElementById("destICAO").innerHTML = decodedValue;
                 }
                 }
-                document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
-                sensorCharacteristicFound = characteristic;
-                characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
-                characteristic.startNotifications();
-                console.log("Notifications Started.");
-                return characteristic.readValue();
+                //document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
+                //sensorCharacteristicFound = characteristic;
+                //characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
+                //characteristic.startNotifications();
+                //console.log("Notifications Started.");
+                return characteristic[0].readValue();
             })
             .catch(error => {
                 document.getElementById("consoleArea").innerHTML += 'Error: ' + error + '\n';
