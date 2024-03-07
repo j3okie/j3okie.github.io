@@ -181,7 +181,7 @@
             const service = await server.getPrimaryService(bleService);
 
             const FltNumCharacteristic = await service.getCharacteristic('0001');
-            await FltNumCharacteristic.readValue();
+            FltNumCharacteristic.readValue();
             const characteristics = await service.getCharacteristics();
 
             for (let c = 0; c < characteristics.length; c++) {
