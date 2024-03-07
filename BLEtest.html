@@ -136,6 +136,7 @@
     //Global Variables to Handle Bluetooth
     var bleServer;
     var bleServiceFound;
+    var FltNumCharacteristic;
     var sensorCharacteristicFound;
 
     // Connect Button (search for BLE Devices only if BLE is available)
@@ -179,11 +180,14 @@
 
             const service = await server.getPrimaryService(bleService);
 
+            const FltNumCharacteristic = await service.getCharacteristic('0001');
+            await FltNumCharacteristic.readValue();
             const characteristics = await service.getCharacteristics();
 
             for (let c = 0; c < characteristics.length; c++) {
                 document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
-                characteristics[c].readValue();
+                //const FltNumCharacteristic = await service.getCharacteristic('0001') 
+                //.readValue();
             }
 
             for (let c = 0; c < characteristics.length; c++) {
