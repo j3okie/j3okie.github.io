@@ -77,8 +77,8 @@
         </thead>
         <tr>
             <td height="10px"></td>
-            <td id="notoc"class="tg-1lax">notoc</td>
-            <td id="wdr"class="tg-1lax">WDR</td>
+            <td id="notoc" class="tg-1lax"></td>
+            <td id="wdr" class="tg-1lax"></td>
             <td></td>
         </tr>
         <tr>
@@ -191,13 +191,13 @@
 
     // Connect to BLE Device
     async function connectToDevice() {
-        try{
-        document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
+        try {
+            document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
             const device = await navigator.bluetooth.requestDevice({
                 filters: [{ name: deviceName }]
             });
             document.getElementById("consoleArea").innerHTML += 'Device Selected:' + device.name + '\n';
-            
+
             const server = await device.gatt.connect();
             bleStateContainer.innerHTML = 'Connected to ' + device.name;
             bleStateContainer.style.color = "#24af37";
@@ -211,40 +211,18 @@
 
             const characteristics = await service.getCharacteristics();
 
-            for (let c = 0; c < characteristics.length; c++) {
-                document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
-                //const FltNumCharacteristic = await service.getCharacteristic('0001') 
-                //.readValue();
-            }
+            //do something with characteristics
+            readCharacteristics(characteristics);
 
-            for (let c = 0; c < characteristics.length; c++) {
-                document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristics[c].uuid + '\n';
-                //let temp;
-                if (characteristics[c].properties.write){
-                    document.getElementById("consoleArea").innerHTML += "Writeable:\n"
-                characteristics[c].readValue();
-                }
-                document.getElementById("consoleArea").innerHTML += "Read command completed for UUID:" + characteristics[c].uuid + '\n';
-                let decodedValue;
-                decodedValue = new TextDecoder().decode(characteristics[c].value);
-                document.getElementById("consoleArea").innerHTML += " value:" + decodedValue + '\n';
-                if (characteristics[c].uuid === fnFlightNum) {
-                    document.getElementById("fltNum").innerHTML = decodedValue;
-                } else if (characteristics[c].uuid === fnDeptICAO) {
-                    document.getElementById("deptICAO").innerHTML = decodedValue;
-                } else if (characteristics[c].uuid === fnDestICAO) {
-                    document.getElementById("destICAO").innerHTML = decodedValue;
-                }
-            }
-        } catch(error){
+        } catch (error) {
             document.getElementById("consoleArea").innerHTML += "Error: " + error;
         }
-            //document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
-            //sensorCharacteristicFound = characteristic;
-            //characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
-            //characteristic.startNotifications();
-            //console.log("Notifications Started.");
-            //return characteristics[0].readValue();
+        //document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + characteristic.uuid + '\n';
+        //sensorCharacteristicFound = characteristic;
+        //characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
+        //characteristic.startNotifications();
+        //console.log("Notifications Started.");
+        //return characteristics[0].readValue();
     }
 
     function onDisconnected(event) {
@@ -286,7 +264,7 @@
     function disconnectDevice() {
         console.log("Disconnect Device.");
         if (bleServer && bleServer.connected) {
-            
+
         } else {
             // Throw an error if Bluetooth is not connected
             console.error("Bluetooth is not connected.");
@@ -306,7 +284,7 @@
         var datetime = day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;
         return datetime;
     }
-    function initializeDisplay () {
+    function initializeDisplay() {
         //process this string: https://j3okie.github.io/BLEtest.html?dept=KBDL&flight=DL2829&dest=KDTW&push=1301L&ete=1:29&land=1951Z&block=14.8&minto=13.4&destf=6.3&perf=&notoc=
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
@@ -333,17 +311,42 @@
         document.getElementById("blockFuel").innerHTML = BlockFuel;
         document.getElementById("toFuel").innerHTML = ToFuel;
         document.getElementById("arrFuel").innerHTML = ArrFuel;
-        if (WDR === "WDR"){
-        document.getElementById("wdr").innerHTML = WDR;
+        if (WDR === "WDR") {
+            document.getElementById("wdr").innerHTML = WDR;
         } else {
             document.getElementById("wdr").classList.remove("tg-1lax");
         }
-        if (NOTOC === "NOTOC"){
-        document.getElementById("notoc").innerHTML = NOTOC;
-        } else{
+        if (NOTOC === "NOTOC") {
+            document.getElementById("notoc").innerHTML = NOTOC;
+        } else {
             document.getElementById("notoc").classList.remove("tg-1lax");
         }
-        document.getElementById("fliteNoteStatus").innerHTML = "Connect to FliteNote to push this data to FliteNote";
+        document.getElementById("fliteNoteStatus").innerHTML = "OakNotes data: ";
+    }
+
+    function readCharacteristics(characteristics) {
+        for (let c = 0; c < characteristics.length; c++) {
+            if (characteristics[c].properties.read) {
+                document.getElementById("consoleArea").innerHTML += "readable:\n"
+                let decodedValue;
+                decodedValue = new TextDecoder().decode(characteristics[c].value);
+                document.getElementById("consoleArea").innerHTML += "Read command completed for UUID:" + characteristics[c].uuid + '\n';
+                document.getElementById("consoleArea").innerHTML += " value:" + decodedValue + '\n';
+                if (characteristics[c].uuid === fnFlightNum) {
+                    document.getElementById("fltNum").innerHTML = decodedValue;
+                } else if (characteristics[c].uuid === fnDeptICAO) {
+                    document.getElementById("deptICAO").innerHTML = decodedValue;
+                } else if (characteristics[c].uuid === fnDestICAO) {
+                    document.getElementById("destICAO").innerHTML = decodedValue;
+                }
+            } else if(characteristics[c].properties.write){
+                document.getElementById("consoleArea").innerHTML += "Writeable:\n"
+                const encoder = new TextEncoder().encode("W");
+                characteristics[c].writeValue(encoder);
+        }else{
+                document.getElementById("consoleArea").innerHTML += "Characteristic not readable:" + characteristics[c].uuid + '\n';
+            }
+        }
     }
 
 
