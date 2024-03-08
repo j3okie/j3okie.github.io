@@ -65,7 +65,7 @@
     <button id="connectBleButton">Connect to BLE FliteNote</button>
     <button id="disconnectBleButton">Disconnect FliteNote</button>
     <p>BLE state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
-    <h2>Fetched Value</h2>
+    <h2 id="flightNoteStatus">Empty Value</h2>
     <table class="tg">
         <thead>
             <tr>
@@ -100,14 +100,8 @@
             <td id="arrFuel">Land</td>
         </tr>
     </table>
-    <p><span id="valueContainer">NaN</span></p>
     <p>Last reading: <span id="timestamp"></span></p>
-    <h2>Control GPIO 2</h2>
-    <button id="onButton">ON</button>
-    <button id="offButton">OFF</button>
-    <p>Last value sent: <span id="valueSent"></span></p>
-    <p><a href="https://randomnerdtutorials.com/">Created by RandomNerdTutorials.com</a></p>
-    <p><a href="https://RandomNerdTutorials.com/esp32-web-bluetooth/">Read the full project here.</a></p>
+    <p><a href="https://j3okie.github.io/">Created by OakNotes</a></p>
     <pre id="consoleArea"></pre>
 </body>
 <script>
@@ -356,9 +350,17 @@
         document.getElementById("blockFuel").innerHTML = BlockFuel;
         document.getElementById("toFuel").innerHTML = ToFuel;
         document.getElementById("arrFuel").innerHTML = ArrFuel;
+        if (WDR === "WDR"){
         document.getElementById("wdr").innerHTML = WDR;
+        } else{
+            document.getElementById("wdr").classList.remove("tg-1lax")
+        }
+        if (NOTOC === "NOTOC"){
         document.getElementById("notoc").innerHTML = NOTOC;
-
+        } else{
+            document.getElementById("notoc").classList.remove("tg-1lax")
+        }
+        document.getElementById("flightNoteStatus").innerHTML = "Connect to FliteNote to push this data to FliteNote";
     }
 
 
