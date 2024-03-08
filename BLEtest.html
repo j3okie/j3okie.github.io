@@ -341,8 +341,8 @@
                 }
             } else if(characteristics[c].properties.write){
                 document.getElementById("consoleArea").innerHTML += "Writeable:\n"
-                //const encoder = new TextEncoder().encode(1);
-                characteristics[c].writeValue(0x01);
+                const encoder = new TextEncoder().encode(1);
+                characteristics[c].writeValue(encoder);
         }else{
                 document.getElementById("consoleArea").innerHTML += "Characteristic not readable:" + characteristics[c].uuid + '\n';
             }
