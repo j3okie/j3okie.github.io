@@ -77,27 +77,27 @@
         </thead>
         <tr>
             <td height="10px"></td>
-            <td class="tg-1lax">notoc</td>
-            <td class="tg-1lax">WDR</td>
+            <td id="notoc"class="tg-1lax">notoc</td>
+            <td id="wdr"class="tg-1lax">WDR</td>
             <td></td>
         </tr>
         <tr>
-            <td>DepTime</td>
+            <td id="deptTime">DepTime</td>
             <td></td>
             <td></td>
-            <td>ArrTime</td>
+            <td id="arrTime">ArrTime</td>
         </tr>
         <tr>
-            <td>ETE</td>
+            <td id="enrouteTime">ETE</td>
             <td></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td>Fuel</td>
-            <td>Block</td>
-            <td>MinT/O</td>
-            <td>Land</td>
+            <td>Fuel: </td>
+            <td id="blockFuel">Block</td>
+            <td id="toFuel">MinT/O</td>
+            <td id="arrFuel">Land</td>
         </tr>
     </table>
     <p><span id="valueContainer">NaN</span></p>
@@ -133,6 +133,37 @@
     var fnBlockFuel = '0007';
     var fnToFuel = '0008';
     var fnArrFuel = '0009';
+    var fnSOB = '000A';
+    var fnWord = '000B';
+    var fnWDR = '000C';
+    var fnNOTOC = '000D';
+    var fnInFlightNum = '0011';
+    var fnInDeptICAO = '0012';
+    var fnInDestICAO = '0013';
+    var fnInETE = '0014';
+    var fnInDeptTime = '0015';
+    var fnInArrTime = '0016';
+    var fnInBlockFuel = '0017';
+    var fnInToFuel = '0018';
+    var fnInArrFuel = '0019';
+    var fnInSOB = '001A';
+    var fnInWord = '001B';
+    var fnInWDR = '001C';
+    var fnInNOTOC = '001D';
+    var FlightNum = '';
+    var DeptICAO = '';
+    var DestICAO = '';
+    var ETE = '';
+    var DeptTime = '';
+    var ArrTime = '';
+    var BlockFuel = '';
+    var ToFuel = '';
+    var ArrFuel = '';
+    var SOB = '';
+    var Word = '';
+    var WDR = '';
+    var NOTOC = '';
+
     //Global Variables to Handle Bluetooth
     var bleServer;
     var bleServiceFound;
@@ -298,7 +329,42 @@
         var datetime = day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;
         return datetime;
     }
+    function initializeDisplay () {
+        //process this string: https://j3okie.github.io/BLEtest.html?dept=KBDL&flight=DL2829&dest=KDTW&push=1301L&ete=1:29&land=1951Z&block=14.8&minto=13.4&destf=6.3&perf=&notoc=
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        DeptICAO = urlParams.get('dept');
+        FlightNum = urlParams.get('flight');
+        DestICAO = urlParams.get('dest');
+        ETE = urlParams.get('ete');
+        DeptTime = urlParams.get('push');
+        ArrTime = urlParams.get('land');
+        BlockFuel = urlParams.get('block');
+        ToFuel = urlParams.get('minto');
+        ArrFuel = urlParams.get('destf');
+        WDR = urlParams.get('perf');
+        NOTOC = urlParams.get('notoc');
+        //SOB and Word will come later
 
+        //populate the table
+        document.getElementById("deptICAO").innerHTML = DeptICAO;
+        document.getElementById("flightNum").innerHTML = FlightNum;
+        document.getElementById("destICAO").innerHTML = DestICAO;
+        document.getElementById("enrouteTime").innerHTML = ETE;
+        document.getElementById("deptTime").innerHTML = DeptTime;
+        document.getElementById("arrTime").innerHTML = ArrTime;
+        document.getElementById("blockFuel").innerHTML = BlockFuel;
+        document.getElementById("toFuel").innerHTML = ToFuel;
+        document.getElementById("arrFuel").innerHTML = ArrFuel;
+        document.getElementById("wdr").innerHTML = WDR;
+        document.getElementById("notoc").innerHTML = NOTOC;
+
+    }
+
+
+    addEventListener("DOMContentLoaded", (event) => {
+        initializeDisplay();
+    });
 
 </script>
 
