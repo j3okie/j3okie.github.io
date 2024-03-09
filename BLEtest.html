@@ -349,8 +349,41 @@
                     case fnDeptICAO:
                         variable = DeptICAO;
                         break;
-                    default:
+                    case fnDestICAO:
                         variable = DestICAO;
+                        break;
+                    case fnDeptTime:
+                        variable = DeptTime;
+                        break;
+                    case fnArrTime:
+                        variable = ArrTime;
+                        break;
+                    case fnETE:
+                        variable = ETE;
+                        break;
+                    case fnBlockFuel:
+                        variable = BlockFuel;
+                        break;
+                    case fnToFuel:
+                        variable = ToFuel;
+                        break;
+                    case fnArrFuel:
+                        variable = ArrFuel;
+                        break;
+                    case fnSOB:
+                        variable = SOB;
+                        break;
+                    case fnWord:
+                        variable = Word;
+                        break;
+                    case fnWDR:
+                        variable = WDR;
+                        break;
+                    case fnNOTOC:
+                        variable = NOTOC;
+                        break;
+                    default:
+                        variable = "NA";
                 }
                 characteristics[c].writeValue(encoder.encode(variable));
                 document.getElementById("consoleArea").innerHTML += "Write command completed for UUID:" + characteristics[c].uuid + '\n';
