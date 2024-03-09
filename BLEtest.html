@@ -342,7 +342,7 @@
                 //create an encoder
                 const encoder = new TextEncoder();
                 let variable;
-                switch (characteristics) {
+                switch (characteristics[c].uuid) {
                     case fnFlightNum:
                         variable = FlightNum;
                         break;
