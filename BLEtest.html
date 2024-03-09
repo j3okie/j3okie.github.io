@@ -199,7 +199,7 @@
             const characteristics = await service.getCharacteristics();
 
             //do something with characteristics
-            readCharacteristics(characteristics);
+            writeCharacteristics(characteristics);
 
         } catch (error) {
             document.getElementById("consoleArea").innerHTML += "Error: " + error;
@@ -332,6 +332,32 @@
                 characteristics[c].writeValue(encoder);
         }else{
                 document.getElementById("consoleArea").innerHTML += "Characteristic not readable:" + characteristics[c].uuid + '\n';
+            }
+        }
+    }
+    function writeCharacteristics(characteristics) {
+        for (let c = 0; c < characteristics.length; c++) {
+            if (characteristics[c].properties.write) {
+                document.getElementById("consoleArea").innerHTML += "Characteristic " + characteristics[c].uuid + "Writeable:\n"
+                //create an encoder
+                const encoder = new TextEncoder();
+                let variable;
+                switch (characteristics) {
+                    case fnFlightNum:
+                        variable = FlightNum;
+                        break;
+                    case fnDeptICAO:
+                        variable = DeptICAO;
+                        break;
+                    default:
+                        variable = DestICAO;
+                }
+                characteristics[c].writeValue(encoder.encode(variable));
+                document.getElementById("consoleArea").innerHTML += "Write command completed for UUID:" + characteristics[c].uuid + '\n';
+                document.getElementById("consoleArea").innerHTML += " value:" + variable + '\n';
+            
+        }else{
+                document.getElementById("consoleArea").innerHTML += "Characteristic not Writeable:" + characteristics[c].uuid + '\n';
             }
         }
     }
