@@ -286,6 +286,12 @@
         ArrFuel = urlParams.get('destf');
         WDR = urlParams.get('perf');
         NOTOC = urlParams.get('notoc');
+        //format to make work nice
+        ETE = "ETE: " + ETE;
+        BlockFuel = String(Math.ceil(Number(BlockFuel)/100) / 10);
+        ToFuel = String(Math.ceil(Number(ToFuel)/100) / 10);
+        ArrFuel = String(Math.floor(Number(ArrFuel)/100) / 10);
+        ArrTime = ArrTime.substring(0,5);
         //SOB and Word will come later
 
         //populate the table
