@@ -285,9 +285,9 @@
         ToFuel = urlParams.get('minto');
         ArrFuel = urlParams.get('destf');
         WDR = urlParams.get('perf');
-        if (!WDR) WDR = " ";
+        if (!WDR) WDR = "-";
         NOTOC = urlParams.get('notoc');
-        if (!NOTOC) NOTOC = " "; 
+        if (!NOTOC) NOTOC = "-"; 
         //format to make work nice
         ETE = "ETE: " + ETE;
         BlockFuel = String(Math.ceil(Number(BlockFuel)/100) / 10);
