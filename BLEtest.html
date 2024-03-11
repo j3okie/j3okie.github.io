@@ -108,12 +108,12 @@
     // DOM Elements
     const connectButton = document.getElementById('connectBleButton');
     const disconnectButton = document.getElementById('disconnectBleButton');
-    const onButton = document.getElementById('onButton');
-    const offButton = document.getElementById('offButton');
-    const retrievedValue = document.getElementById('valueContainer');
-    const latestValueSent = document.getElementById('valueSent');
+    //const onButton = document.getElementById('onButton');
+    //const offButton = document.getElementById('offButton');
+    //const retrievedValue = document.getElementById('valueContainer');
+    //const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
-    const timestampContainer = document.getElementById('timestamp');
+    //const timestampContainer = document.getElementById('timestamp');
 
     //Define BLE Device Specs
     var deviceName = 'FliteNote';
@@ -184,17 +184,16 @@
                 filters: [{ name: deviceName }]
             });
             document.getElementById("consoleArea").innerHTML += 'Device Selected:' + device.name + '\n';
-
+            device.addEventListener('gattservicedisconnected', onDisconnected);
             const server = await device.gatt.connect();
             bleStateContainer.innerHTML = 'Connected to ' + device.name;
             bleStateContainer.style.color = "#24af37";
-            device.addEventListener('gattservicedisconnected', onDisconnected);
 
             const service = await server.getPrimaryService(bleService);
 
-            const FltNumCharacteristic = await service.getCharacteristic('0001');
-            FltNumCharacteristic.readValue();
-            document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + FltNumCharacteristic.uuid + '\n';
+            //const FltNumCharacteristic = await service.getCharacteristic('0001');
+            //FltNumCharacteristic.readValue();
+            //document.getElementById("consoleArea").innerHTML += "Characteristic discovered:" + FltNumCharacteristic.uuid + '\n';
 
             const characteristics = await service.getCharacteristics();
 
@@ -217,7 +216,7 @@
         bleStateContainer.innerHTML = "Device disconnected";
         bleStateContainer.style.color = "#d13a30";
 
-        connectToDevice();
+        //connectToDevice();
     }
 
     function handleCharacteristicChange(event) {
