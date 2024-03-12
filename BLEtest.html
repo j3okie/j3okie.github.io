@@ -184,7 +184,7 @@
         try {
             document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
             bluetoothDevice = null;
-            const bluetoothDevice = await navigator.bluetooth.requestDevice({
+            bluetoothDevice = await navigator.bluetooth.requestDevice({
                 filters: [{ name: deviceName }]
             })
             bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
