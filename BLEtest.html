@@ -216,7 +216,7 @@
     }
 
     function onDisconnected(event) {
-        console.log('Device Disconnected:', event.target.device.name);
+        console.log('Device Disconnected:', event.target.bluetoothDevice.name);
         bleStateContainer.innerHTML = "Device disconnected";
         bleStateContainer.style.color = "#d13a30";
 
