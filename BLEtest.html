@@ -164,8 +164,8 @@
 
     // Disconnect Button
     disconnectButton.addEventListener('click', disconnectDevice);
-    sOBInput.addEventListener('onblur', syncChange);
-    wordInput.addEventListener('onblur', syncChange);
+    sOBInput.addEventListener('blur', syncChange);
+    wordInput.addEventListener('blur', syncChange);
 
     // Write to the ESP32 LED Characteristic
     //onButton.addEventListener('click', () => writeOnCharacteristic(1));
