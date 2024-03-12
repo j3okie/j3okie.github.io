@@ -100,6 +100,8 @@
             <td id="arrFuel">Land</td>
         </tr>
     </table>
+    <input type="text" id="WordInput" placeholder="Word">
+    <input type="text" id="SOBInput" placeholder="SOB">
     <p>Last reading: <span id="timestamp"></span></p>
     <p><a href="https://j3okie.github.io/">Created by OakNotes</a></p>
     <pre id="consoleArea"></pre>
@@ -144,6 +146,7 @@
     var Word = '';
     var WDR = '';
     var NOTOC = '';
+    var bluetoothDevice;
 
     //Global Variables to Handle Bluetooth
     var bleServer;
@@ -180,13 +183,14 @@
     async function connectToDevice() {
         try {
             document.getElementById("consoleArea").innerHTML += 'Initializing Bluetooth...\n';
-            const device = await navigator.bluetooth.requestDevice({
+            bluetoothDevice = null;
+            const bluetoothDevice = await navigator.bluetooth.requestDevice({
                 filters: [{ name: deviceName }]
-            });
-            document.getElementById("consoleArea").innerHTML += 'Device Selected:' + device.name + '\n';
-            device.addEventListener('gattservicedisconnected', onDisconnected);
-            const server = await device.gatt.connect();
-            bleStateContainer.innerHTML = 'Connected to ' + device.name;
+            })
+            bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
+            document.getElementById("consoleArea").innerHTML += 'Device Selected:' + bluetoothDevice.name + '\n';
+            const server = await bluetoothDevice.gatt.connect();
+            bleStateContainer.innerHTML = 'Connected to ' + bluetoothDevice.name;
             bleStateContainer.style.color = "#24af37";
 
             const service = await server.getPrimaryService(bleService);
@@ -248,14 +252,17 @@
     }
 
     function disconnectDevice() {
-        console.log("Disconnect Device.");
-        if (bleServer && bleServer.connected) {
-
-        } else {
-            // Throw an error if Bluetooth is not connected
-            console.error("Bluetooth is not connected.");
+        if (!bluetoothDevice) {
             window.alert("Bluetooth is not connected.")
+            return;
         }
+        log('Disconnecting from Bluetooth Device...');
+        if (bluetoothDevice.gatt.connected) {
+            bluetoothDevice.gatt.disconnect();
+        } else {
+            log('> Bluetooth Device is already disconnected');
+            window.alert("Bluetooth is not connected.")
+        }console.log("Disconnect Device.");
     }
 
     function getDateTime() {
