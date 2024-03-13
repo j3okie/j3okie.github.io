@@ -416,7 +416,8 @@ function syncChange () {
     let name = event.target.id;
     if (name === "SOBInput"){
         SOB = data;
-    } else if (name === "WordInput"){
+    } 
+    if (name === "WordInput"){
         Word = data;
     }
     writeCharacteristics(characteristics);
