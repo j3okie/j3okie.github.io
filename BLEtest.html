@@ -10,21 +10,21 @@
 <html>
 
 <head>
-    <title>ESP32 Web BLE App</title>
+    <title>FlightNote BLE Controler</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="">
     <style type="text/css">
         .tg {
             border-collapse: collapse;
-            border-spacing: 0;
+            border-spacing: 10;
         }
 
         .tg td {
             border-color: black;
             border-style: solid;
-            border-width: 1px;
+            border-width: 2px;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 36px;
             overflow: hidden;
             padding: 0px 5px;
             word-break: normal;
@@ -35,7 +35,7 @@
             border-style: solid;
             border-width: 1px;
             font-family: Arial, sans-serif;
-            font-size: 14px;
+            font-size: 38px;
             font-weight: normal;
             overflow: hidden;
             padding: 10px 5px;
@@ -55,15 +55,14 @@
             border-style: solid;
             border-width: 0px;
             font-family: Arial, sans-serif;
-            font-size: 8px;
+            font-size: 16px;
         }
     </style>
 </head>
 
 <body>
     <h1>FliteNote by OakNotes</h1>
-    <button id="connectBleButton">Connect to BLE FliteNote</button>
-    <button id="disconnectBleButton">Disconnect FliteNote</button>
+    <button id="connectBleButton">Sync to FliteNote</button>
     <p>BLE state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
     <h2 id="fliteNoteStatus">Empty Value</h2>
     <table class="tg">
@@ -100,8 +99,8 @@
             <td id="arrFuel">Land</td>
         </tr>
     </table>
-    <input type="text" id="WordInput" placeholder="Word">
-    <input type="text" id="SOBInput" placeholder="SOB">
+    <p style="font-size: x-large">Word: <input type="text" id="WordInput" placeholder="Word"></p>
+    <p style="font-size: x-large">Souls on Board: <input type="text" id="SOBInput" placeholder="SOB"></p>
     <p>Last reading: <span id="timestamp"></span></p>
     <p><a href="https://j3okie.github.io/">Created by OakNotes</a></p>
     <pre id="consoleArea"></pre>
