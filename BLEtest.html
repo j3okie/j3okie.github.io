@@ -17,9 +17,16 @@
         .inputArea {
             font-size: x-large
         }
+        .ctlButton {
+            height: 75px;
+            width:80%;
+            background-color:aquamarine;
+            border-radius: 10px;
+        }
         .tg {
             border-collapse: collapse;
             border-spacing: 10;
+            width: 80%;
         }
 
         .tg td {
@@ -36,7 +43,7 @@
         .tg th {
             border-color: black;
             border-style: solid;
-            border-width: 1px;
+            border-width: 2px;
             font-family: Arial, sans-serif;
             font-size: 38px;
             font-weight: normal;
@@ -60,12 +67,17 @@
             font-family: Arial, sans-serif;
             font-size: 16px;
         }
+        .flex-container {
+            width:80%;
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
 </head>
 
 <body>
     <h1>FliteNote by OakNotes</h1>
-    <button id="connectBleButton">Sync to FliteNote</button>
+    <button class="ctlButton" id="connectBleButton">Sync to FliteNote</button>
     <p>BLE state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
     <h2 id="fliteNoteStatus">Empty Value</h2>
     <table class="tg">
@@ -78,7 +90,7 @@
             </tr>
         </thead>
         <tr>
-            <td height="10px"></td>
+            <td height="20px"></td>
             <td id="notoc" class="tg-1lax"></td>
             <td id="wdr" class="tg-1lax"></td>
             <td></td>
@@ -102,11 +114,13 @@
             <td id="arrFuel">Land</td>
         </tr>
     </table>
+    <div class="flex-container">
     <p class="inputArea">Word: <input type="text" id="WordInput" placeholder="Word"></p>
     <p class="inputArea">Souls on Board: <input type="text" id="SOBInput" placeholder="SOB"></p>
+    </div>
     <p>Last reading: <span id="timestamp"></span></p>
     <p><a href="https://j3okie.github.io/">Created by OakNotes</a></p>
-    <pre id="consoleArea"></pre>
+    <pre style="display: hidden;" id="consoleArea"></pre>
 </body>
 <script>
     // DOM Elements
@@ -144,7 +158,7 @@
     var BlockFuel = '';
     var ToFuel = '';
     var ArrFuel = '';
-    var SOB = '';
+    var SOB = '0';
     var Word = '';
     var WDR = '';
     var NOTOC = '';
