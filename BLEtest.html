@@ -239,8 +239,8 @@
     }
 
     function onDisconnected(event) {
-        console.log('Device Disconnected:', event.target.bluetoothDevice.name);
-        bleStateContainer.innerHTML = "Device disconnected";
+        //console.log('Device Disconnected:', event.target.bluetoothDevice.name);
+        bleStateContainer.innerHTML = "FliteNote disconnected";
         bleStateContainer.style.color = "#d13a30";
 
         //connectToDevice();
