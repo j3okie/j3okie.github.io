@@ -75,6 +75,10 @@
             display: flex;
             justify-content: space-between;
         }
+        .dark-mode{
+            background-color: #0a244d;
+            color: #8cabd9;
+        }
     </style>
 </head>
 
@@ -186,6 +190,12 @@
     //disconnectButton.addEventListener('click', disconnectDevice);
     sOBInput.addEventListener('blur', syncChange);
     wordInput.addEventListener('blur', syncChange);
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) { // dark mode
+                dayNightMode();
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+                dayNightMode();
+            })
 
     // Write to the ESP32 LED Characteristic
     //onButton.addEventListener('click', () => writeOnCharacteristic(1));
@@ -201,7 +211,12 @@
         console.log('Web Bluetooth API supported in this browser.');
         return true
     }
+    function dayNightMode() {
+            var element = document.body;
+            element.classList.toggle("dark-mode");
+            //document.getElementById('summary').classList.toggle('table-dark');
 
+        }
     // Connect to BLE Device
     async function connectToDevice() {
         try {
