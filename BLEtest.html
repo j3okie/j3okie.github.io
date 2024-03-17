@@ -15,39 +15,45 @@
     <link rel="icon" type="image/png" href="">
     <style type="text/css">
         body {
-        font-family: Arial;
-        margin: 0px 5px 0px 5px;
-        width: device-width;
-        font-size: large;
-        padding: 10px;
-        background-color: white;
-        color: black;
-}
+            font-family: Arial;
+            margin: 0px 5px 0px 5px;
+            width: device-width;
+            font-size: large;
+            padding: 10px;
+            background-color: white;
+            color: black;
+        }
 
         .inputArea {
             font-size: x-large
         }
+
         .dark-mode .inputArea {
             background-color: #8cabd9;
-            color:aquamarine;
+            color: aquamarine;
         }
+
         ::placeholder {
-        color: red;
-            opacity: 1; /* Firefox */
-            }
+            color: red;
+            opacity: 1;
+            /* Firefox */
+        }
+
         .ctlButton {
             height: 75px;
-            width:80%;
+            width: 80%;
             padding-left: 50px;
             padding-right: 50px;
-            background-color:aquamarine;
+            background-color: aquamarine;
             border-radius: 10px;
             font-size: 38px;
         }
-        .dark-mode .ctlButton{
-            color:aquamarine;
+
+        .dark-mode .ctlButton {
+            color: aquamarine;
             background-color: #8cabd9;
         }
+
         .tg {
             border-collapse: collapse;
             border-spacing: 10;
@@ -92,12 +98,14 @@
             font-family: Arial, sans-serif;
             font-size: 16px;
         }
+
         .flex-container {
-            width:80%;
+            width: 80%;
             display: flex;
             justify-content: space-between;
         }
-        .dark-mode{
+
+        .dark-mode {
             background-color: #0a244d;
             color: #8cabd9;
         }
@@ -145,13 +153,13 @@
     </table>
     <p></p>
     <div class="flex-container">
-    <input class="inputArea" type="text" id="WordInput" placeholder="Word">
-    <button class="ctlButton">Sync</button>
-    <input class="inputArea" type="text" id="SOBInput" placeholder="SOB">
+        <input class="inputArea" type="text" id="WordInput" placeholder="Word">
+        <button class="ctlButton">Sync</button>
+        <input class="inputArea" type="text" id="SOBInput" placeholder="SOB">
     </div>
     <p>Last reading: <span id="timestamp"></span></p>
     <p><a href="https://j3okie.github.io/">Created by OakNotes</a></p>
-    <pre style="display: hidden;" id="consoleArea"></pre>
+    <pre style="display: none;" id="consoleArea"></pre>
 </body>
 <script>
     // DOM Elements
@@ -199,7 +207,7 @@
     var bleServer;
     var bleServiceFound;
     var FltNumCharacteristic;
-    var characteristics; 
+    var characteristics;
 
     // Connect Button (search for BLE Devices only if BLE is available)
     connectButton.addEventListener('click', (event) => {
@@ -213,11 +221,11 @@
     sOBInput.addEventListener('blur', syncChange);
     wordInput.addEventListener('blur', syncChange);
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) { // dark mode
-                dayNightMode();
-            }
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-                dayNightMode();
-            })
+        dayNightMode();
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+        dayNightMode();
+    })
 
     // Write to the ESP32 LED Characteristic
     //onButton.addEventListener('click', () => writeOnCharacteristic(1));
@@ -234,11 +242,11 @@
         return true
     }
     function dayNightMode() {
-            var element = document.body;
-            element.classList.toggle("dark-mode");
-            //document.getElementById('summary').classList.toggle('table-dark');
+        var element = document.body;
+        element.classList.toggle("dark-mode");
+        //document.getElementById('summary').classList.toggle('table-dark');
 
-        }
+    }
     // Connect to BLE Device
     async function connectToDevice() {
         try {
@@ -322,7 +330,7 @@
         } else {
             log('> Bluetooth Device is already disconnected');
             window.alert("Bluetooth is not connected.")
-        }console.log("Disconnect Device.");
+        } console.log("Disconnect Device.");
     }
 
     function getDateTime() {
@@ -351,15 +359,15 @@
         ToFuel = urlParams.get('minto');
         ArrFuel = urlParams.get('destf');
         WDR = urlParams.get('perf');
-        if (WDR === ""){ WDR = "0";};
+        if (WDR === "") { WDR = "0"; };
         NOTOC = urlParams.get('notoc');
-        if (NOTOC === ""){ NOTOC = "0";}; 
+        if (NOTOC === "") { NOTOC = "0"; };
         //format to make work nice
         //ETE = "ETE: " + ETE;
-        BlockFuel = String(Math.ceil(Number(BlockFuel)/100) / 10);
-        ToFuel = String(Math.ceil(Number(ToFuel)/100) / 10);
-        ArrFuel = String(Math.floor(Number(ArrFuel)/100) / 10);
-        ArrTime = ArrTime.substring(0,5);
+        BlockFuel = String(Math.ceil(Number(BlockFuel) / 100) / 10);
+        ToFuel = String(Math.ceil(Number(ToFuel) / 100) / 10);
+        ArrFuel = String(Math.floor(Number(ArrFuel) / 100) / 10);
+        ArrTime = ArrTime.substring(0, 5);
         //SOB and Word will come later
 
         //populate the table
@@ -400,11 +408,11 @@
                 } else if (characteristics[c].uuid === fnDestICAO) {
                     document.getElementById("destICAO").innerHTML = decodedValue;
                 }
-            } else if(characteristics[c].properties.write){
+            } else if (characteristics[c].properties.write) {
                 document.getElementById("consoleArea").innerHTML += "Writeable:\n"
                 const encoder = new TextEncoder().encode(1);
                 characteristics[c].writeValue(encoder);
-        }else{
+            } else {
                 document.getElementById("consoleArea").innerHTML += "Characteristic not readable:" + characteristics[c].uuid + '\n';
             }
         }
@@ -462,23 +470,23 @@
                 characteristics[c].writeValue(encoder.encode(variable));
                 document.getElementById("consoleArea").innerHTML += "Write command completed for UUID:" + characteristics[c].uuid + '\n';
                 document.getElementById("consoleArea").innerHTML += " value:" + variable + '\n';
-            
-        }else{
+
+            } else {
                 document.getElementById("consoleArea").innerHTML += "Characteristic not Writeable:" + characteristics[c].uuid + '\n';
             }
         }
     }
-function syncChange () {
-    let data = event.target.value;
-    let name = event.target.id;
-    if (name === "SOBInput"){
-        SOB = data;
-    } 
-    if (name === "WordInput"){
-        Word = data;
+    function syncChange() {
+        let data = event.target.value;
+        let name = event.target.id;
+        if (name === "SOBInput") {
+            SOB = data;
+        }
+        if (name === "WordInput") {
+            Word = data;
+        }
+        writeCharacteristics(characteristics);
     }
-    writeCharacteristics(characteristics);
-}
 
     addEventListener("DOMContentLoaded", (event) => {
         initializeDisplay();
