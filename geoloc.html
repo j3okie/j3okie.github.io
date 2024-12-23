@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>LHR CDA Calculator</title>
+    <style>
+        table {
+          border: 1px solid;
+        }
+        .hidden {
+            display: none;
+        }
+        .invisible {
+            visibility: hidden;
+        }
+        .unhidden {
+            visibility: visible;
+        }
+        input {
+            text-align: right;
+        }
+        .StopGPSButton
+        {
+            background-color:red;
+        }
+        .StartGPSButton {
+            background-color: limegreen;
+        }
+    </style>
+    <script>
+        var Speed = 0;
+        var Altitude = 0;
+        var OldLat = 0;
+        var OldLon = 0;
+        var NewLat = 0;
+        var NewLon = 0;
+        var CumDist = 0;
+        var FreezeDisToTDflag = false;
+        var UseGPS = false;
+        var GPS_IsAvail = false;
+        var InitialGPS_Start = false;
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(showPosition, FailMessage, { enableHighAccuracy: true, timeout: 60000, maximumAge: 1000 });
+            } else {
+                alert("Geolocaton not supported by this browser.");
+            }
+        }
+        function FailMessage() {
+            document.getElementById("GroundSpeed").innerHTML = "No fix";
+        }
+
+        function showPosition(position) {
+            //document.getElementById("TestLatLon").innerHTML = "Lat: " + position.coords.latitude + "<br />Lon: " + position.coords.longitude;
+            if (Speed == null || Altitude == null || NewLat == null || NewLon == null) {
+                alert("This browser of method of loading does not support location.")
+            }
+            else {
+                Speed = position.coords.speed * 1.94384;
+                document.getElementById("GroundSpeed").value = Speed.toFixed(1);
+
+                Altitude = position.coords.altitude * 3.2808399;
+                document.getElementById("Altitude").value = Altitude.toFixed(1);
+
+                NewLat = position.coords.latitude;
+                NewLon = position.coords.longitude;
+                if (FreezeDisToTDflag == false) {
+                    FindResults();
+                }
+                GPS_IsAvail = true;
+                if (UseGPS) {
+                    document.getElementById("StatusDiv").innerHTML = "GPS is being used.";
+                }
+                else
+                {
+                    document.getElementById("StatusDiv").innerHTML = "GPS is available.";
+                }
+                //document.getElementById("ToggleGPSbutton").className = "Unhidden";
+                //document.getElementById("ToggleGPSbutton").className = "StopGPSButton";
+                if (InitialGPS_Start == false)
+                {
+                    InitialGPS_Start = true;
+                    ToggleGPSMode();
+                }
+            }
+        }
+
+
+        function FindResults() {
+
+            var Altitude = Math.abs(document.getElementById("Altitude").value);
+            var DisToTD = Math.abs(document.getElementById("DisToTD").value);
+            var GroundSpeed = Math.abs(document.getElementById("GroundSpeed").value);
+            var TargetAltitude = document.getElementById("TargetAltitude").value;
+            var TargetDistance = Math.abs(document.getElementById("TargetDistance").value);
+            var AngleToTarget = 0;
+            var VStoTarget = 0;
+            var MinOrMax = "";
+            var ThreeDegDes = 0;
+            var DistSinceLastPoint = 0;
+
+
+            if (Altitude == "" || DisToTD == "" || GroundSpeed == "" || TargetAltitude == "" || TargetDistance == "") {
+                //return;
+            }
+            //alert("Alt: " + Altitude + "  TargetAlt: " + TargetAltitude + "  GS: " + GroundSpeed + "  DistToTD: " + DisToTD +"  TargetDist:" + TargetDistance);
+            VStoTarget = (Altitude - TargetAltitude) / 60 * GroundSpeed / (DisToTD - TargetDistance);
+            ThreeDegDes = GroundSpeed * 5.307;
+            AngleToTarget = Math.atan2((Altitude - TargetAltitude), (DisToTD - TargetDistance) * 6080) * 57.2957795
+            if (AngleToTarget < 3) {
+                MinOrMax = "MAX";
+            }
+            else {
+                MinOrMax = "MIN";
+            }
+            document.getElementById("VStoTarget").textContent = MinOrMax + " " + Math.abs(Math.round(VStoTarget));
+            AngleToTarget = Math.round(AngleToTarget * 100) / 100
+            document.getElementById("AngleToTarget").textContent = AngleToTarget;
+
+            //document.getElementById("TestOutput").innerHTML = OldLat + ":" + OldLon;
+            if (Math.abs(OldLat - NewLat) < 1 && Math.abs(OldLon - NewLon) < 1) {//reasonableness and first point check
+                DistSinceLastPoint = calcCrow(OldLat, OldLon, NewLat, NewLon);
+                CumDist += DistSinceLastPoint
+                document.getElementById("CumDist").innerHTML = CumDist.toFixed(2);
+
+                //document.getElementById("TestOutput").innerHTML = "Cumulative dist for testing: " + (CumDist * 6076).toFixed(0) + "ft.  "+ (CumDist * 1.15077).toFixed(2) + "sm."
+                DisToTD = DisToTD - DistSinceLastPoint;
+                document.getElementById("DisToTD").value = DisToTD;
+            }
+
+            OldLat = NewLat;
+            OldLon = NewLon;
+
+            FreezeDisToTDflag = false;
+        }
+        function calcCrow(lat1, lon1, lat2, lon2) {
+            //mod from https://stackoverflow.com/questions/18883601/function-to-calculate-distance-between-two-coordinates
+            var R = 3440; // nm
+            var dLat = toRad(lat2 - lat1);
+            var dLon = toRad(lon2 - lon1);
+            var lat1 = toRad(lat1);
+            var lat2 = toRad(lat2);
+
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d;
+        }
+
+        // Converts numeric degrees to radians
+        function toRad(Value) {
+            return Value * Math.PI / 180;
+        }
+        function FreezeDisToTD() {
+            document.getElementById("DisToTD").value = "";
+            document.getElementById("VStoTarget").textContent = "Stopped";
+            CumDist = 0;
+            FreezeDisToTDflag = true;
+        }
+        function EnterDistanceToGo()
+        {
+            document.getElementById("OriginalDistToTD").innerHTML = document.getElementById("DisToTD").value;
+            FreezeDisToTDflag = false;
+            FindResults();
+        }
+        function PageOpenScript()
+        {
+            document.getElementById('main').className = "unhidden";
+            document.getElementById('OpenMessage').className = "hidden";
+            getLocation();
+            if (GPS_IsAvail)
+            {
+                
+                ToggleGPSMode();
+            }
+        }
+        function ToggleGPSMode() {
+            if (UseGPS) {
+                UseGPS = false;
+                document.getElementById("ToggleGPSbutton").value = "Start GPS update";
+                document.getElementById("ToggleGPSbutton").className = "StartGPSButton";
+                document.getElementById("CalcButton").className = "unhidden";
+                document.getElementById("StatusDiv").innerHTML = "GPS is available.";
+            }
+            else {
+                UseGPS = true;
+                document.getElementById("ToggleGPSbutton").value = "Stop GPS updates";
+                document.getElementById("ToggleGPSbutton").className = "StopGPSButton";
+                document.getElementById("CalcButton").className = "invisible";
+            }
+        }
+    </script>
+</head>
+<body onload="PageOpenScript()">
+    <div id="OpenMessage">
+        <p>DO NOT click on "DONE" yet!</p>
+        <p>Share this to Edge. Use the icon in the lower left edge of this window that looks like a square with an arrow coming out. Click on "Done" after the page loads.</p>
+        <p>Make sure that you allow the page to use your position. If you mess it up, just run the shortcut again.</p>
+        <p>This does not use any external data. Using a shortcut is just being used as a way of storing and accessing the calculator for offline use.</p>
+    </div>
+    <div id="main" class="hidden">
+        <h1>LHR CDA Calculator</h1>
+        <p id="StatusDiv">GPS is unavailable.</p>
+        <input class="invisible" id="ToggleGPSbutton" type="button" value="Start GPS update" onclick="ToggleGPSMode()">
+        <table>
+            <tr>
+                <td colspan="3"><strong>Input</strong></td>
+            </tr>
+            <tr>
+                <td>Distance to TD</td>
+                <td><input type="number" id="DisToTD" onfocus="FreezeDisToTD();" onchange="EnterDistanceToGo();" /></td>
+                <td>nm.</td>
+            </tr>
+            <tr>
+                <td colspan="5">&nbsp;</td>
+            </tr>
+            <tr>
+                <td>Current Altitude</td>
+                <td><input type="number" id="Altitude" onchange="FindResults()" /></td>
+                <td>ft.</td>
+            </tr>
+            <tr>
+                <td colspan="5">&nbsp;</td>
+            </tr>
+
+            <tr>
+                <td>Ground Speed</td>
+                <td><input type="number" id="GroundSpeed" value="200" /></td>
+                <td>kts.</td>
+            </tr>
+            <tr>
+                <td colspan="3"><input class="unhidden" id="CalcButton" type="button" value="Calculate" onclick="FindResults()" style="width: 100%; text-align: center"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>Output</strong></td>
+            </tr>
+            <tr>
+                <td>VS to target</td>
+                <td id="VStoTarget" style="text-align:right"></td>
+                <td>ft/min</td>
+            </tr>
+            <tr>
+                <td>Angle to target</td>
+                <td id="AngleToTarget" style="text-align:right"></td>
+                <td>deg</td>
+            </tr>
+            <tr>
+                <td colspan="3">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>Reference</strong></td>
+            </tr>
+            <tr>
+                <td>Original Dist to touchdown</td>
+                <td id="OriginalDistToTD" style="text-align:right"></td>
+                <td>nm.</td>
+            </tr>
+            <tr>
+                <td>Ground run:</td>
+                <td id="CumDist" style="text-align:right"></td>
+                <td>nm.</td>
+            </tr>
+            <tr>
+                <td colspan="3">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>Setup</strong></td>
+            </tr>
+            <tr>
+                <td>Target Altitude</td>
+                <td><input type="number" id="TargetAltitude" value="2500" onchange="FindResults()" /></td>
+                <td>ft.</td>
+            </tr>
+            <tr>
+                <td>Target distance</td>
+                <td><input type="number" id="TargetDistance" value="7.5" onchange="FindResults()" /></td>
+                <td>nm.</td>
+            </tr>
+            <tr>
+                <td colspan="3">Note: To avoid confusion, all distances are positive.</td>
+            </tr>
+            <tr>
+                <td colspan="3">Note: Negative altitudes are allowed to faciliate testing.</td>
+            </tr>
+        </table>
+        <h1>Discussion</h1>
+        <h2>Overview:</h2>
+        <blockquote>This is designed with LHR (London Heathrow) continuous descents angle initial approaches (CDA) in mind. When the controller gives you the ground track miles to go, enter it. If the GPS is not working, this is simply a calculator where you will have to enter your altitude and groundspeed. 
+        If GPS is working, then this will use the GPS values for speed and altitude to calculate the descent rate necessary to intercept the target. 
+        This should also use the GPS to count down the miles flown from the initial ground track miles entry.</blockquote>
+        <blockquote>
+            This is not a precise maneuver. The GPS altitude may be slightly different from the baro altitude and the ground track distance given by the controller is probably not precise. The idea is to get down fast enough so you do not have to dive to catch the glideslope and to avoid gettting down so quickly you have to level off before descending via the glideslope.
+            Generally, you will join final well above and outside the target (2500feet and 7.5 nm in LHR). Once you get close to final, the glideslope will help refine the necessary descent rate.
+        </blockquote>
+        <blockquote>
+            In general, I would think using an amateur web page for VNAV would be a really stupid idea. However, this is not a VNAV approach close to the ground. It is just a way of descending to catch the glide slope without having to level off.
+        </blockquote>
+        <blockquote>
+            I only use positive values for distances. Arguably, the distance to the target and touchdown should be negative like the FMS. 
+            There is no use in this calculator for distance on the other side of the target, so I just use absolute values so either logic should work. 
+         </blockquote>
+        <blockquote>
+                It may seem strange that I allow negative altitudes. This allows me to test.
+                When I am walking around my neigborhood looking like a wierdo with my iPad at 100ft MSL, I can put the Target Altitude at -2400 to check the calculations when using GPS.
+                While there might be some risk of someone entering a negative distance using FMS logic, there should be no reason to accidentally enter a negative altitude.
+            </blockquote>
+        <h2>Caution:</h2>
+        <blockquote>
+            <p><strong>This is highly experimental. This is not endorsed by anybody. Use at your own risk.</strong></p>
+        </blockquote>
+        <h2>Official source for descent rates</h2>
+        <blockquote>
+            <p>Undisclosed Air Line Airway Manual 3.2.7.1 has a profile table. Should this location change, search for "CDA" of "Continuous Descent Approach".</p>
+            <p>
+                I find that my calculator give higher descent rates than the table. I have crosschecked my calculations with a seperate spreadsheet and I beleive my calculations are accurate.
+                I speculate that the difference is that I just give the geometry of the situation and the AM table gives a descent rate less than the geometry would indicate so that you do not level off prematurely.
+            </p>
+        </blockquote>
+        <h2>Feedback</h2>
+        <blockquote>
+            <p>I would enjoy your feedback. I would be curious as to weather you find this useful, prefer the Airway Manual, or simply find that a little mental math is adequate. <a href="mailto:thejohnbell@gmail.com?Subject=LHR CDA Calculator">thejohnbell@gmail.com</a>.</p>
+        </blockquote>
+        <h2>Updates</h2>
+            <blockquote>
+                <table>
+                    <tr>
+                        <td>2024/12/23</td><td>Initial release of this version.</td>
+                    </tr>
+                </table>
+            </blockquote>
+    </div>
+</body>
+</html>
