@@ -399,8 +399,8 @@
                 document.getElementById("consoleArea").innerHTML += "readable:\n"
                 let decodedValue;
                 decodedValue = new TextDecoder().decode(characteristics[c].value);
-                document.getElementById("consoleArea").innerHTML += "Read command completed for UUID:" + characteristics[c].uuid + '\n';
-                document.getElementById("consoleArea").innerHTML += " value:" + decodedValue + '\n';
+                document.getElementById("consoleArea").innerHTML = "Read command completed for UUID:" + characteristics[c].uuid + '\n' + document.getElementById("consoleArea").innerHTML;
+                document.getElementById("consoleArea").innerHTML = " value:" + decodedValue + '\n' + document.getElementById("consoleArea").innerHTML;
                 if (characteristics[c].uuid === fnFlightNum) {
                     document.getElementById("fltNum").innerHTML = decodedValue;
                 } else if (characteristics[c].uuid === fnDeptICAO) {
@@ -409,11 +409,11 @@
                     document.getElementById("destICAO").innerHTML = decodedValue;
                 }
             } else if (characteristics[c].properties.write) {
-                document.getElementById("consoleArea").innerHTML += "Writeable:\n"
+                document.getElementById("consoleArea").innerHTML = "Writeable:\n" + document.getElementById("consoleArea").innerHTML;
                 const encoder = new TextEncoder().encode(1);
                 characteristics[c].writeValue(encoder);
             } else {
-                document.getElementById("consoleArea").innerHTML += "Characteristic not readable:" + characteristics[c].uuid + '\n';
+                document.getElementById("consoleArea").innerHTML = "Characteristic not readable:" + characteristics[c].uuid + '\n' + document.getElementById("consoleArea").innerHTML;
             }
         }
     }
@@ -468,11 +468,11 @@
                         variable = "NA";
                 }
                 characteristics[c].writeValue(encoder.encode(variable));
-                document.getElementById("consoleArea").innerHTML += "Write command completed for UUID:" + characteristics[c].uuid + '\n';
-                document.getElementById("consoleArea").innerHTML += " value:" + variable + '\n';
+                document.getElementById("consoleArea").innerHTML = "Write command completed for UUID:" + characteristics[c].uuid + '\n' + document.getElementById("consoleArea").innerHTML;
+                document.getElementById("consoleArea").innerHTML = " value:" + variable + '\n' + document.getElementById("consoleArea").innerHTML;
 
             } else {
-                document.getElementById("consoleArea").innerHTML += "Characteristic not Writeable:" + characteristics[c].uuid + '\n';
+                document.getElementById("consoleArea").innerHTML = "Characteristic not Writeable:" + characteristics[c].uuid + '\n' + document.getElementById("consoleArea").innerHTML;
             }
         }
     }
