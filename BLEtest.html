@@ -468,8 +468,7 @@
                         variable = "NA";
                 }
                 characteristics[c].writeValue(encoder.encode(variable));
-                document.getElementById("consoleArea").innerHTML = "Write command completed for UUID:" + characteristics[c].uuid + '\n' + document.getElementById("consoleArea").innerHTML;
-                document.getElementById("consoleArea").innerHTML = " value:" + variable + '\n' + document.getElementById("consoleArea").innerHTML;
+                document.getElementById("consoleArea").innerHTML = "Write command completed for UUID:" + characteristics[c].uuid + '\n' + " value:" + variable + '\n' + document.getElementById("consoleArea").innerHTML;
 
             } else {
                 document.getElementById("consoleArea").innerHTML = "Characteristic not Writeable:" + characteristics[c].uuid + '\n' + document.getElementById("consoleArea").innerHTML;
